@@ -4,6 +4,8 @@ var build = require('build');
 var express = require('express');
 var proxy = require('http-proxy');
 
+var PORT = 2000;
+
 var server = new proxy.RoutingProxy();
 
 var allowed = {
@@ -53,5 +55,5 @@ app.all('*', function (req, res) {
     res.set('Content-Type', 'text/html').send(200, index);
 });
 
-app.listen(2000);
-console.log('listening on port 2000');
+app.listen(PORT);
+console.log('listening on port ' + PORT);
