@@ -1,0 +1,8 @@
+{
+    "name": "hub.serandives.com",
+    "paths": ["app"],
+    "local": [],
+    "dependencies": {
+        "serandomps/hub": "master"
+    }
+}
