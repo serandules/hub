@@ -4,7 +4,7 @@ var build = require('build');
 var express = require('express');
 var proxy = require('http-proxy');
 
-var PORT = 2000;
+var PORT = 4002;
 
 var server = new proxy.RoutingProxy();
 
