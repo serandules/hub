@@ -1,59 +1,52 @@
 var fs = require('fs');
-//var process = require('process');
 var build = require('build');
 var express = require('express');
-var proxy = require('http-proxy');
+var mongoose = require('mongoose');
+var token = require('hub-token');
+var auth = require('auth');
 
-var PORT = 4002;
+var mongourl = 'mongodb://localhost/test';
+var HTTP_PORT = 4000;
+var app = express();
 
-var server = new proxy.RoutingProxy();
-
-var allowed = {
-    'accounts.serandives.com': 4000,
-    'auto.serandives.com': 4000,
-    'localhost': 4000
-};
-
-var app = module.exports = express();
+auth = auth(token, {
+    open: [
+        '^(?!\\/apis(\\/|$)).+',
+        '^\/apis\/v\/tokens([\/].*|$)',
+        '^\/apis\/v\/vehicles$',
+        '^\/apis\/v\/menus\/.*$'
+    ]
+});
 
 var index = fs.readFileSync('./public/index.html', 'utf-8');
 
-app.use(express.favicon(__dirname + '/public/images/favicon.ico'));
+mongoose.connect(mongourl);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback() {
+    console.log('connected to mongodb : ' + mongourl);
 
-app.use('/public', express.static(__dirname + '/public'));
+    app.use(express.favicon(__dirname + '/public/images/favicon.ico'));
+    app.use('/public', express.static(__dirname + '/public'));
 
-app.use(function (req, res, next) {
-    var xhost = req.header('x-host');
-    if (xhost) {
-        xhost = xhost.split(':');
-        var host = xhost[0];
-        var port = xhost.length === 2 ? xhost[1] : 80;
-        if (allowed[host] != port) {
-            res.send(404, 'Not Found');
-            return;
-        }
-        console.log('proxing request to host: ' + host + ' port: ' + port);
-        server.proxyRequest(req, res, {
-            host: host,
-            port: port
-        });
-        return;
-    }
-    next();
-});
+    //auth header loading
+    app.use(auth);
 
-var env = process.env.NODE_ENV;
-if (env !== 'production') {
+    //menu apis
+    app.use('/apis/v', require('./lib/menus'));
+
+    //hot component building
     app.use(build);
-}
 
-/**
- * GET index page.
- */
-app.all('*', function (req, res) {
-    //TODO: check caching headers
-    res.set('Content-Type', 'text/html').send(200, index);
+    //index page
+    app.all('*', function (req, res) {
+        //TODO: check caching headers
+        res.set('Content-Type', 'text/html').send(200, index);
+    });
+
+    app.use(express.json());
+    app.use(express.urlencoded());
+
+    app.listen(HTTP_PORT);
+    console.log('listening on port ' + HTTP_PORT);
 });
-
-app.listen(PORT);
-console.log('listening on port ' + PORT);

@@ -8,8 +8,10 @@
     },
     "dependencies": {
         "express": "3.*",
-        "http-proxy": "0.10.3",
-        "build": "serandules/build#master"
+        "mongoose": "3.8.12",
+        "build": "serandules/build#master",
+        "auth": "serandules/auth#master",
+        "hub-token": "serandules/hub-token#master"
     },
     "repository": {
         "type": "git",
