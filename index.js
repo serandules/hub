@@ -2,14 +2,13 @@ var fs = require('fs');
 var build = require('build');
 var express = require('express');
 var mongoose = require('mongoose');
-var token = require('hub-token');
 var auth = require('auth');
 
-var mongourl = 'mongodb://localhost/test';
+var mongourl = 'mongodb://localhost/hub';
 var HTTP_PORT = 4000;
 var app = express();
 
-auth = auth(token, {
+auth = auth({
     open: [
         '^(?!\\/apis(\\/|$)).+',
         '^\/apis\/v\/tokens([\/].*|$)',
@@ -32,8 +31,14 @@ db.once('open', function callback() {
     //auth header loading
     app.use(auth);
 
+    app.use(express.json());
+    app.use(express.urlencoded());
+
+    //token apis
+    app.use('/apis/v', require('token-service'));
+    app.use('/apis/v', require('user-service'));
     //menu apis
-    app.use('/apis/v', require('./lib/menus'));
+    app.use('/apis/v', require('./lib/menu'));
 
     //hot component building
     app.use(build);
@@ -43,9 +48,6 @@ db.once('open', function callback() {
         //TODO: check caching headers
         res.set('Content-Type', 'text/html').send(200, index);
     });
-
-    app.use(express.json());
-    app.use(express.urlencoded());
 
     app.listen(HTTP_PORT);
     console.log('listening on port ' + HTTP_PORT);

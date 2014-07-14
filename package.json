@@ -10,8 +10,15 @@
         "express": "3.*",
         "mongoose": "3.8.12",
         "build": "serandules/build#master",
+        "utils": "serandules/utils#master",
+        "mongutils": "serandules/mongutils#master",
+        "user": "serandules/user#master",
+        "client": "serandules/client#master",
+        "token": "serandules/token#master",
         "auth": "serandules/auth#master",
-        "hub-token": "serandules/hub-token#master"
+        "user-service": "serandules/user-service#master",
+        "client-service": "serandules/client-service#master",
+        "token-service": "serandules/token-service#master"
     },
     "repository": {
         "type": "git",
