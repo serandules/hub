@@ -39,6 +39,10 @@ db.once('open', function callback() {
     app.use('/apis/v', require('user-service'));
     //menu apis
     app.use('/apis/v', require('./lib/menu'));
+    //drones apis
+    app.use('/apis/v', require('./lib/drone'));
+        //domains apis
+    app.use('/apis/v', require('./lib/domain'));
 
     //hot component building
     app.use(build);
