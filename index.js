@@ -7,8 +7,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var auth = require('auth');
 
-var str = JSON.stringify;
-var pas = JSON.parse;
+var socket = require('./lib/socket');
 
 var mongourl = 'mongodb://localhost/hub';
 var HTTP_PORT = 4000;
@@ -57,35 +56,20 @@ db.once('open', function callback() {
     //domains apis
     app.use('/apis/v', require('./lib/domain'));
 
-    var wss = new ws.Server({
-        server: server
-    });
+    socket(server);
 
-    var clients = [];
-    wss.on('connection', function (socket) {
-        console.log('connected');
-        clients.push(socket);
-        socket.on('message', function (o) {
-            o = pas(o);
-            console.log(o.data.data);
-        });
-        socket.on('disconnect', function () {
-            console.log('disconnected');
-        });
-    });
-
-    app.get('/wss', function (req, res) {
-        console.log(req.query.data);
-        var data = pas(req.query.data);
-        data.id = uuid.v4();
-        clients.forEach(function (client) {
-            client.send(str(data));
-        });
-        res.send('done');
-    });
+    /*app.get('/wss', function (req, res) {
+     console.log(req.query.data);
+     var data = JSON.parse(req.query.data);
+     data.id = uuid.v4();
+     clients.forEach(function (client) {
+     client.send(str(data));
+     });
+     res.send('done');
+     });*/
 
     //hot component building
-    //app.use(build);
+    app.use(build);
 
     //index page
     app.all('*', function (req, res) {
