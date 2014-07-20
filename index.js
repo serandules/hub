@@ -1,7 +1,6 @@
 var fs = require('fs');
 var https = require('https');
 var uuid = require('node-uuid');
-var ws = require('ws');
 var build = require('build');
 var express = require('express');
 var mongoose = require('mongoose');
