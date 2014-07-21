@@ -54,8 +54,10 @@ db.once('open', function callback() {
     app.use('/apis/v', require('./lib/drone'));
     //domains apis
     app.use('/apis/v', require('./lib/domain'));
+    //servers apis
+    app.use('/apis/v', require('./lib/server'));
 
-    socket(server);
+    socket.listen(server);
 
     /*app.get('/wss', function (req, res) {
      console.log(req.query.data);
