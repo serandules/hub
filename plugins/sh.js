@@ -1,18 +1,22 @@
-var sockt = require('../lib/socket');
+var PLUGIN = 'sh';
 
-var PLUGIN = 'hub';
-
-module.exports.serve = function (socket, options) {
+module.exports = function (notify, options) {
     console.log(options);
-    var server,
-        action = options.action;
+    var action = options.action;
     switch (action) {
         case 'run':
-            server = sockt.server(options.id);
-            server.socket.emit('exec', {
-                plugin: PLUGIN,
-                action: action
+            //TODO here
+            notify({
+                action: action,
+                command: options.command,
+                args: options.args
             });
+            break;
+        case 'stdout':
+            console.log('-----------------------------sh---------------------------');
+            console.log(options.data);
+            break;
+        case 'stderr':
             break;
     }
 };
