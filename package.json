@@ -19,7 +19,8 @@
         "auth": "serandules/auth#master",
         "user-service": "serandules/user-service#master",
         "client-service": "serandules/client-service#master",
-        "token-service": "serandules/token-service#master"
+        "token-service": "serandules/token-service#master",
+        "socproc": "serandules/socproc#master"
     },
     "repository": {
         "type": "git",
