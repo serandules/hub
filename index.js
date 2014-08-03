@@ -13,8 +13,8 @@ var HTTP_PORT = 4000;
 var app = express();
 
 var options = {
-    key: fs.readFileSync('ssl/hub.key'),
-    cert: fs.readFileSync('ssl/hub.cert')
+    key: fs.readFileSync('/etc/ssl/serand/hub.key'),
+    cert: fs.readFileSync('/etc/ssl/serand/hub.cert')
 };
 
 var server = https.createServer(options, app);
