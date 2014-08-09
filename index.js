@@ -2,11 +2,13 @@ var fs = require('fs');
 var https = require('https');
 var uuid = require('node-uuid');
 var build = require('build');
+var io = require('socket.io');
 var express = require('express');
 var mongoose = require('mongoose');
 var auth = require('auth');
 
-var socket = require('./lib/socket');
+var hub = require('./lib/hub');
+var ap = require('./lib/app');
 
 var mongourl = 'mongodb://localhost/hub';
 var HTTP_PORT = 4000;
@@ -53,11 +55,13 @@ db.once('open', function callback() {
     //drones apis
     app.use('/apis/v', require('./lib/drone'));
     //domains apis
-    app.use('/apis/v', require('./lib/domain'));
+    app.use('/apis/v', require('./lib/domain').app);
     //servers apis
     app.use('/apis/v', require('./lib/server'));
 
-    socket.listen(server);
+    io = io(server);
+    hub.listen(io);
+    ap.listen(io);
 
     /*app.get('/wss', function (req, res) {
      console.log(req.query.data);

@@ -17,7 +17,10 @@ var server = https.createServer(options, app);
 
 io = io(server);
 
-server.listen(HTTP_PORT);
+server.listen(function() {
+    var address = server.address();
+    console.log("opened server on %j", address);
+});
 console.log('listening on port ' + HTTP_PORT);
 
 var sps = socproc('server', io);
