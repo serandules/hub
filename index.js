@@ -84,9 +84,4 @@ db.once('open', function callback() {
 
     server.listen(HTTP_PORT);
     console.log('listening on port ' + HTTP_PORT);
-
-    process.on('message', function (data) {
-        console.log('----------------hub message-----------------');
-        console.log(data);
-    });
 });
