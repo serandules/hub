@@ -30,7 +30,7 @@ auth = auth({
     ]
 });
 
-var index = fs.readFileSync('./public/index.html', 'utf-8');
+var index = fs.readFileSync(__dirname + '/public/index.html', 'utf-8');
 
 mongoose.connect(mongourl);
 var db = mongoose.connection;
