@@ -88,5 +88,5 @@ db.once('open', function callback() {
 
 process.on('uncaughtException', function (err) {
     console.log('unhandled exception');
-    console.log(err);
+    console.trace(err);
 });
