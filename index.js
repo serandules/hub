@@ -85,3 +85,8 @@ db.once('open', function callback() {
     server.listen(HTTP_PORT);
     console.log('listening on port ' + HTTP_PORT);
 });
+
+process.on('uncaughtException', function (err) {
+    console.log('unhandled exception');
+    console.log(err);
+});
