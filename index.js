@@ -56,6 +56,8 @@ db.once('open', function callback() {
     app.use('/apis/v', require('./lib/drone'));
     //domains apis
     app.use('/apis/v', require('./lib/domain').app);
+    //configs apis
+    app.use('/apis/v', require('./lib/config').app);
     //servers apis
     app.use('/apis/v', require('./lib/server'));
 
