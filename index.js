@@ -18,8 +18,8 @@ var options = {
     key: fs.readFileSync('/etc/ssl/serand/hub.key'),
     cert: fs.readFileSync('/etc/ssl/serand/hub.crt'),
     ca: [fs.readFileSync('/etc/ssl/serand/hub-client.crt')],
-    requestCert: true,
-    rejectUnauthorized: true
+    requestCert: true
+    //rejectUnauthorized: true
 };
 
 var server = https.createServer(options, app);
