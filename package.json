@@ -16,7 +16,7 @@
         "mongutils": "serandules/mongutils#master",
         "user": "serandules/user#master",
         "client": "serandules/client#master",
-        "token": "serandules/token#master",
+        "token": "git+https://github.com/serandules/token#master",
         "auth": "serandules/auth#master",
         "user-service": "serandules/user-service#master",
         "client-service": "serandules/client-service#master",
