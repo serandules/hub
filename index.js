@@ -10,6 +10,8 @@ var auth = require('auth');
 var hub = require('./lib/hub');
 var ap = require('./lib/app');
 
+var started = false;
+
 var mongourl = 'mongodb://localhost/hub';
 var HTTP_PORT = 4000;
 var app = express();
@@ -89,9 +91,20 @@ db.once('open', function callback() {
 
     server.listen(HTTP_PORT);
     console.log('listening on port ' + HTTP_PORT);
+
+    started = true;
+    process.send({
+        event: 'hub started'
+    });
 });
 
 process.on('uncaughtException', function (err) {
     console.log('unhandled exception ' + err);
     console.trace(err.stack);
+    if (started) {
+        return;
+    }
+    process.send({
+        event: 'hub stopped'
+    });
 });
