@@ -1,3 +1,4 @@
+var debug = require('debug')('serandules-hub');
 var fs = require('fs');
 var https = require('https');
 var uuid = require('node-uuid');
@@ -41,7 +42,7 @@ mongoose.connect(mongourl);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback() {
-    console.log('connected to mongodb : ' + mongourl);
+    debug('connected to mongodb : ' + mongourl);
 
     app.use(express.favicon(__dirname + '/public/images/favicon.ico'));
     app.use('/public', express.static(__dirname + '/public'));
@@ -71,7 +72,7 @@ db.once('open', function callback() {
     ap.listen(io);
 
     /*app.get('/wss', function (req, res) {
-     console.log(req.query.data);
+     debug(req.query.data);
      var data = JSON.parse(req.query.data);
      data.id = uuid.v4();
      clients.forEach(function (client) {
@@ -90,7 +91,7 @@ db.once('open', function callback() {
     });
 
     server.listen(HTTP_PORT);
-    console.log('listening on port ' + HTTP_PORT);
+    debug('listening on port ' + HTTP_PORT);
 
     started = true;
     process.send({
@@ -99,7 +100,7 @@ db.once('open', function callback() {
 });
 
 process.on('uncaughtException', function (err) {
-    console.log('unhandled exception ' + err);
+    debug('unhandled exception ' + err);
     console.trace(err.stack);
     if (started) {
         return;
