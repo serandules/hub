@@ -1,4 +1,4 @@
-var debug = require('debug')('serandules-hub');
+var debug = require('debug')('serandules:hub');
 var fs = require('fs');
 var https = require('https');
 var uuid = require('node-uuid');
