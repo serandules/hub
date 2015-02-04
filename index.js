@@ -1,103 +1,108 @@
-var debug = require('debug')('serandules:hub');
-var fs = require('fs');
-var https = require('https');
-var uuid = require('node-uuid');
-var build = require('build');
-var io = require('socket.io');
-var express = require('express');
-var mongoose = require('mongoose');
-var auth = require('auth');
+var log = require('logger')('drone');
+var agent = require('hub-agent');
 
-var hub = require('./lib/hub');
-var ap = require('./lib/app');
+agent('hub', function (worker) {
+    var debug = require('debug')('serandules:hub');
+    var fs = require('fs');
+    var https = require('https');
+    var uuid = require('node-uuid');
+    var build = require('build');
+    var io = require('socket.io');
+    var express = require('express');
+    var mongoose = require('mongoose');
+    var auth = require('auth');
 
-var started = false;
+    var hub = require('./lib/hub');
+    var ap = require('./lib/app');
 
-var mongourl = 'mongodb://localhost/hub';
-var HTTP_PORT = 4000;
-var app = express();
+    var started = false;
 
-var options = {
-    key: fs.readFileSync('/etc/ssl/serand/hub.key'),
-    cert: fs.readFileSync('/etc/ssl/serand/hub.crt'),
-    ca: [fs.readFileSync('/etc/ssl/serand/hub-client.crt')],
-    requestCert: true
-    //rejectUnauthorized: true
-};
+    var mongourl = 'mongodb://localhost/hub';
+    var HTTP_PORT = 4000;
+    var app = express();
 
-var server = https.createServer(options, app);
+    var options = {
+        key: fs.readFileSync('/etc/ssl/serand/hub.key'),
+        cert: fs.readFileSync('/etc/ssl/serand/hub.crt'),
+        ca: [fs.readFileSync('/etc/ssl/serand/hub-client.crt')],
+        requestCert: true
+        //rejectUnauthorized: true
+    };
 
-auth = auth({
-    open: [
-        '^(?!\\/apis(\\/|$)).+',
-        '^\/apis\/v\/tokens([\/].*|$)',
-        '^\/apis\/v\/vehicles$',
-        '^\/apis\/v\/menus\/.*$'
-    ]
-});
+    var server = https.createServer(options, app);
 
-var index = fs.readFileSync(__dirname + '/public/index.html', 'utf-8');
-
-mongoose.connect(mongourl);
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback() {
-    debug('connected to mongodb : ' + mongourl);
-
-    app.use(express.favicon(__dirname + '/public/images/favicon.ico'));
-    app.use('/public', express.static(__dirname + '/public'));
-
-    //auth header loading
-    app.use(auth);
-
-    app.use(express.json());
-    app.use(express.urlencoded());
-
-    //token apis
-    app.use('/apis/v', require('token-service'));
-    app.use('/apis/v', require('user-service'));
-    //menu apis
-    app.use('/apis/v', require('./lib/menu'));
-    //drones apis
-    app.use('/apis/v', require('./lib/drone'));
-    //domains apis
-    app.use('/apis/v', require('./lib/domain').app);
-    //configs apis
-    app.use('/apis/v', require('./lib/config').app);
-    //servers apis
-    app.use('/apis/v', require('./lib/server'));
-
-    io = io(server);
-    hub.listen(io);
-    ap.listen(io);
-
-    /*app.get('/wss', function (req, res) {
-     debug(req.query.data);
-     var data = JSON.parse(req.query.data);
-     data.id = uuid.v4();
-     clients.forEach(function (client) {
-     client.send(str(data));
-     });
-     res.send('done');
-     });*/
-
-    //hot component building
-    app.use(build);
-
-    //index page
-    app.all('*', function (req, res) {
-        //TODO: check caching headers
-        res.set('Content-Type', 'text/html').send(200, index);
+    auth = auth({
+        open: [
+            '^(?!\\/apis(\\/|$)).+',
+            '^\/apis\/v\/tokens([\/].*|$)',
+            '^\/apis\/v\/vehicles$',
+            '^\/apis\/v\/menus\/.*$'
+        ]
     });
 
-    server.listen(HTTP_PORT);
-    debug('listening on port ' + HTTP_PORT);
+    var index = fs.readFileSync(__dirname + '/public/index.html', 'utf-8');
 
-    started = true;
-    process.send({
-        event: 'hub started'
+    mongoose.connect(mongourl);
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function callback() {
+        debug('connected to mongodb : ' + mongourl);
+
+        app.use(express.favicon(__dirname + '/public/images/favicon.ico'));
+        app.use('/public', express.static(__dirname + '/public'));
+
+        //auth header loading
+        app.use(auth);
+
+        app.use(express.json());
+        app.use(express.urlencoded());
+
+        //token apis
+        app.use('/apis/v', require('token-service'));
+        app.use('/apis/v', require('user-service'));
+        //menu apis
+        app.use('/apis/v', require('./lib/menu'));
+        //drones apis
+        app.use('/apis/v', require('./lib/drone'));
+        //domains apis
+        app.use('/apis/v', require('./lib/domain').app);
+        //configs apis
+        app.use('/apis/v', require('./lib/config').app);
+        //servers apis
+        app.use('/apis/v', require('./lib/server'));
+
+        io = io(server);
+        hub.listen(io);
+        ap.listen(io);
+
+        /*app.get('/wss', function (req, res) {
+         debug(req.query.data);
+         var data = JSON.parse(req.query.data);
+         data.id = uuid.v4();
+         clients.forEach(function (client) {
+         client.send(str(data));
+         });
+         res.send('done');
+         });*/
+
+        //hot component building
+        app.use(build);
+
+        //index page
+        app.all('*', function (req, res) {
+            //TODO: check caching headers
+            res.set('Content-Type', 'text/html').send(200, index);
+        });
+
+        server.listen(HTTP_PORT);
+        debug('listening on port ' + HTTP_PORT);
+
+        started = true;
+        process.send({
+            event: 'hub started'
+        });
     });
-});
+}, 1);
 
 process.on('uncaughtException', function (err) {
     debug('unhandled exception ' + err);
