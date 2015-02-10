@@ -2,7 +2,6 @@ var log = require('logger')('drone');
 var agent = require('hub-agent');
 
 agent('hub', function (worker) {
-    var debug = require('debug')('serandules:hub');
     var fs = require('fs');
     var https = require('https');
     var uuid = require('node-uuid');
@@ -14,8 +13,6 @@ agent('hub', function (worker) {
 
     var hub = require('./lib/hub');
     var ap = require('./lib/app');
-
-    var started = false;
 
     var mongourl = 'mongodb://localhost/hub';
     var HTTP_PORT = 4000;
@@ -46,7 +43,7 @@ agent('hub', function (worker) {
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
     db.once('open', function callback() {
-        debug('connected to mongodb : ' + mongourl);
+        log.info('connected to mongodb : ' + mongourl);
 
         app.use(express.favicon(__dirname + '/public/images/favicon.ico'));
         app.use('/public', express.static(__dirname + '/public'));
@@ -95,22 +92,11 @@ agent('hub', function (worker) {
         });
 
         server.listen(HTTP_PORT);
-        debug('listening on port ' + HTTP_PORT);
-
-        started = true;
-        process.send({
-            event: 'hub started'
-        });
+        log.info('listening on port ' + HTTP_PORT);
     });
 }, 1);
 
 process.on('uncaughtException', function (err) {
     debug('unhandled exception ' + err);
     console.trace(err.stack);
-    if (started) {
-        return;
-    }
-    process.send({
-        event: 'hub stopped'
-    });
 });
