@@ -1,7 +1,7 @@
-var log = require('logger')('drone');
+var log = require('logger')('hub');
 var agent = require('hub-agent');
 
-agent('hub', function (worker) {
+agent('hub', function () {
     var fs = require('fs');
     var https = require('https');
     var uuid = require('node-uuid');
@@ -95,8 +95,3 @@ agent('hub', function (worker) {
         log.info('listening on port ' + HTTP_PORT);
     });
 }, 1);
-
-process.on('uncaughtException', function (err) {
-    debug('unhandled exception ' + err);
-    console.trace(err.stack);
-});
