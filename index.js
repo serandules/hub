@@ -1,7 +1,7 @@
 var log = require('logger')('hub');
 var agent = require('hub-agent');
 
-agent('hub', function () {
+agent.cluster('hub', function () {
     var fs = require('fs');
     var https = require('https');
     var uuid = require('node-uuid');
@@ -59,8 +59,6 @@ agent('hub', function () {
         app.use('/apis/v', require('user-service'));
         //menu apis
         app.use('/apis/v', require('./lib/menu'));
-        //drones apis
-        app.use('/apis/v', require('./lib/drone'));
         //domains apis
         app.use('/apis/v', require('./lib/domain').app);
         //configs apis
@@ -92,6 +90,8 @@ agent('hub', function () {
         });
 
         server.listen(HTTP_PORT);
-        log.info('listening on port ' + HTTP_PORT);
+        log.info('hub started on port ' + HTTP_PORT);
     });
-}, 1);
+}, 1, function (err, drone) {
+
+});
