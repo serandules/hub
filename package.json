@@ -1,33 +1,9 @@
 {
     "name": "hub",
-    "description": "hub",
-    "version": "0.0.0",
-    "author": {
-        "name": "serandives",
-        "email": "serandives@gmail.com"
-    },
     "dependencies": {
-        "debug": "*",
-        "async": "*",
-        "express": "3.*",
-        "socket.io": "1.1.0",
-        "mongoose": "3.8.12",
-        "node-uuid": "*",
-        "debug": "*",
-        "build": "serandules/build#master",
-        "utils": "serandules/utils#master",
-        "mongutils": "serandules/mongutils#master",
-        "user": "serandules/user#master",
-        "client": "serandules/client#master",
-        "token": "serandules/token#master",
-        "auth": "serandules/auth#master",
-        "user-service": "serandules/user-service#master",
-        "client-service": "serandules/client-service#master",
-        "token-service": "serandules/token-service#master",
-        "socproc": "serandules/socproc#master"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/serandules/hub.git"
+        "express": "4.*",
+        "serve-favicon": "2.*",
+        "body-parser": "1.*",
+        "socket.io": "1.3.*"
     }
 }

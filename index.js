@@ -1,97 +1,51 @@
 var log = require('logger')('hub');
-var agent = require('hub-agent');
+var clustor = require('clustor');
 
-agent.cluster('hub', function () {
+var configs = require('hub-configs');
+
+clustor(configs.domain, function () {
     var fs = require('fs');
     var https = require('https');
-    var uuid = require('node-uuid');
-    var build = require('build');
-    var io = require('socket.io');
     var express = require('express');
-    var mongoose = require('mongoose');
-    var auth = require('auth');
-
-    var hub = require('./lib/hub');
-    var ap = require('./lib/app');
-
-    var mongourl = 'mongodb://localhost/hub';
-    var HTTP_PORT = 4000;
-    var app = express();
+    var io = require('socket.io');
 
     var options = {
-        key: fs.readFileSync('/etc/ssl/serand/hub.key'),
-        cert: fs.readFileSync('/etc/ssl/serand/hub.crt'),
-        ca: [fs.readFileSync('/etc/ssl/serand/hub-client.crt')],
-        requestCert: true
-        //rejectUnauthorized: true
+        key: fs.readFileSync(configs.ssl.key),
+        cert: fs.readFileSync(configs.ssl.cert),
+        ca: [fs.readFileSync(configs.ssl.ca)],
+        requestCert: true,
+        rejectUnauthorized: false
     };
 
+    var app = express();
+
+    app.use('/apis/v', require('./apis/servers'));
+    app.use('/apis/v', require('./apis/domains'));
+    app.use('/apis/v', require('./apis/configs'));
+    app.use('/apis/v', require('./apis/drones'));
+
     var server = https.createServer(options, app);
-
-    auth = auth({
-        open: [
-            '^(?!\\/apis(\\/|$)).+',
-            '^\/apis\/v\/tokens([\/].*|$)',
-            '^\/apis\/v\/vehicles$',
-            '^\/apis\/v\/menus\/.*$'
-        ]
-    });
-
-    var index = fs.readFileSync(__dirname + '/public/index.html', 'utf-8');
-
-    mongoose.connect(mongourl);
-    var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-    db.once('open', function callback() {
-        log.info('connected to mongodb : ' + mongourl);
-
-        app.use(express.favicon(__dirname + '/public/images/favicon.ico'));
-        app.use('/public', express.static(__dirname + '/public'));
-
-        //auth header loading
-        app.use(auth);
-
-        app.use(express.json());
-        app.use(express.urlencoded());
-
-        //token apis
-        app.use('/apis/v', require('token-service'));
-        app.use('/apis/v', require('user-service'));
-        //menu apis
-        app.use('/apis/v', require('./lib/menu'));
-        //domains apis
-        app.use('/apis/v', require('./lib/domain').app);
-        //configs apis
-        app.use('/apis/v', require('./lib/config').app);
-        //servers apis
-        app.use('/apis/v', require('./lib/server'));
-
-        io = io(server);
-        hub.listen(io);
-        ap.listen(io);
-
-        /*app.get('/wss', function (req, res) {
-         debug(req.query.data);
-         var data = JSON.parse(req.query.data);
-         data.id = uuid.v4();
-         clients.forEach(function (client) {
-         client.send(str(data));
-         });
-         res.send('done');
-         });*/
-
-        //hot component building
-        app.use(build);
-
-        //index page
-        app.all('*', function (req, res) {
-            //TODO: check caching headers
-            res.set('Content-Type', 'text/html').send(200, index);
+    io = io(server);
+    var drones = io.of('/drones').on('connection', function (socket) {
+        log.info('client connected to /drones');
+        socket.emit('join', {
+            hello: 'world'
         });
-
-        server.listen(HTTP_PORT);
-        log.info('hub started on port ' + HTTP_PORT);
     });
-}, 1, function (err, drone) {
+    drones.use(function (socket, next) {
+        var query = socket.handshake.query;
+        var token = query.token;
+        if (!token) {
+            return next('hub-client token not found');
+        }
+        if (configs.token !== token) {
+            return next('unauthorized hub-client');
+        }
+        next();
+    });
+    server.listen(configs.port);
 
+}, function (err, address) {
+    log.info(JSON.stringify(address));
+    log.info('%s listening at https://%s:%s', configs.domain, address.address, address.port);
 });
