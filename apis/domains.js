@@ -4,6 +4,8 @@ var router = express.Router();
 
 var Domain = require('../lib/domain');
 
+module.exports = router;
+
 router.get('/domains', function (req, res) {
     Domain.find({}).exec(function (err, domains) {
         res.send(domains);
@@ -34,5 +36,3 @@ router.delete('/domains/:id', function (req, res) {
         });
     });
 });
-
-module.exports = router;

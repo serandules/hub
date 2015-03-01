@@ -1,8 +1,8 @@
 {
     "name": "hub.serandives.com",
-    "paths": ["app"],
-    "local": [],
+    "scripts": ["client/index.js"],
+    "templates": ["component.json"],
     "dependencies": {
-        "serandomps/hub": "master"
+        "serandomps/hub": "*"
     }
 }

@@ -10,6 +10,7 @@ var mongoose = require('mongoose');
 var io = require('socket.io');
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
+var builder = require('component-middleware');
 
 var serv = require('./lib/server');
 
@@ -37,6 +38,8 @@ var auth = function (socket, next) {
     next();
 };
 
+var index = fs.readFileSync(__dirname + '/public/index.html', 'utf-8');
+
 var app = express();
 
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
@@ -49,10 +52,24 @@ app.use(bodyParser.urlencoded({
 
 app.use(bodyParser.json());
 
+//token apis
+app.use('/apis/v', require('token-service'));
+app.use('/apis/v', require('user-service'));
+
+app.use('/apis/v', require('./apis/menus'));
 app.use('/apis/v', require('./apis/servers'));
 app.use('/apis/v', require('./apis/domains'));
 app.use('/apis/v', require('./apis/configs'));
 app.use('/apis/v', require('./apis/drones'));
+
+app.use(builder({
+    path: '/build/build'
+}));
+//index page
+app.all('*', function (req, res) {
+    //TODO: check caching headers
+    res.set('Content-Type', 'text/html').status(200).send(index);
+});
 
 var server = https.createServer(options, app);
 
@@ -76,7 +93,8 @@ db.once('open', function callback() {
     });
 });
 
+/*
 process.on('uncaughtException', function (err) {
     log.fatal('unhandled exception %s', err);
     log.trace(err.stack);
-});
+});*/
