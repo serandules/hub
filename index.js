@@ -11,6 +11,8 @@ var io = require('socket.io');
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var builder = require('component-middleware');
+var auth = require('auth');
+var procevent = require('procevent');
 
 var serv = require('./lib/server');
 
@@ -26,7 +28,17 @@ var options = {
     rejectUnauthorized: false
 };
 
-var auth = function (socket, next) {
+auth = auth({
+    open: [
+        '^(?!\\/apis(\\/|$)).+',
+        '^\/apis\/v\/tokens([\/].*|$)',
+        '^\/apis\/v\/vehicles$',
+        '^\/apis\/v\/menus\/.*$'
+    ]
+});
+
+
+var socouth = function (socket, next) {
     var query = socket.handshake.query;
     var token = query.token;
     if (!token) {
@@ -46,6 +58,8 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 app.use('/public', express.static(__dirname + '/public'));
 
+app.use(auth);
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -61,6 +75,7 @@ app.use('/apis/v', require('./apis/servers'));
 app.use('/apis/v', require('./apis/domains'));
 app.use('/apis/v', require('./apis/configs'));
 app.use('/apis/v', require('./apis/drones'));
+app.use('/apis/v', require('./apis/hub'));
 
 app.use(builder({
     path: '/build/build'
@@ -83,18 +98,21 @@ db.on('error', log.error.bind(log, 'connection error:'));
 db.once('open', function callback() {
     log.info('connected to mongodb : ' + mongourl);
 
-    serv.listen(io.of('/servers').use(auth));
-    drone.listen(io.of('/drones').use(auth));
+    serv.listen(io.of('/servers').use(socouth));
+    drone.listen(io.of('/drones').use(socouth));
 
     server.listen(configs.port, function () {
         var address = server.address();
+        procevent = procevent(process);
+        procevent.emit('started', address.port);
+        procevent.destroy();
         log.info(JSON.stringify(address));
         log.info('hub started | url:https://%s:%s', configs.domain, address.port);
     });
 });
 
 /*
-process.on('uncaughtException', function (err) {
-    log.fatal('unhandled exception %s', err);
-    log.trace(err.stack);
-});*/
+ process.on('uncaughtException', function (err) {
+ log.fatal('unhandled exception %s', err);
+ log.trace(err.stack);
+ });*/
