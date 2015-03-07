@@ -106,7 +106,7 @@ db.once('open', function callback() {
         procevent = procevent(process);
         procevent.emit('started', address.port);
         procevent.destroy();
-        log.info(JSON.stringify(address));
+        log.debug(JSON.stringify(address));
         log.info('hub started | url:https://%s:%s', configs.domain, address.port);
     });
 });
