@@ -58,7 +58,7 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 app.use('/public', express.static(__dirname + '/public'));
 
-app.use(auth);
+//app.use(auth);
 
 app.use(bodyParser.urlencoded({
     extended: true

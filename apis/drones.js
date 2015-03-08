@@ -7,27 +7,24 @@ var server = require('../lib/server');
 
 module.exports = router;
 
-router.get('/servers/:id/drones', function (req, res) {
-    var serv = req.params.id;
-    var dronz = server.drones(req.params.id);
-    var drones = [];
-    var dron;
-    var id;
-    for (id in dronz) {
-        if (dronz.hasOwnProperty(id)) {
-            dron = dronz[id];
-            drones.push({
-                id: dron.id,
-                ip: dron.ip,
-                port: dron.port
-            });
-        }
-    }
-    res.send(drones);
+router.post('/drones', function (req, res) {
+    var data = req.body;
+    var serv = server.servers(data.server);
+    serv.start(data.domain, function (err, id, ip, port) {
+        log.debug('drone started id:%s, ip:%s, port:%s', id, ip, port);
+    });
+    res.send({
+        error: false
+    });
 });
 
-router.get('/servers/:server/drones/:id', function (req, res) {
-    var drone = server.drones(req.params.server, req.params.id);
+router.get('/drones/:id', function (req, res) {
+    var drone = server.drone(req.params.id);
+    if (!drone) {
+        return res.status(404).send({
+            error: 'drone cannot be found'
+        });
+    }
     res.send({
         id: drone.id,
         ip: drone.ip,
@@ -35,18 +32,22 @@ router.get('/servers/:server/drones/:id', function (req, res) {
     });
 });
 
-router.post('/servers/:id/drones', function (req, res) {
-    var data = req.body;
-    var serv = server.servers(req.params.id);
-    Domain.findOne({
-        _id: data.domain
-    }).exec(function (err, domain) {
-        serv.start(domain.repo, function (err, id, ip, port) {
-            res.send({
-                id: id,
-                ip: ip,
-                port: port
-            });
+router.get('/drones', function (req, res) {
+    var drones = server.drones(req.query.domain);
+    var dronez = [];
+    drones.forEach(function (drone) {
+        dronez.push({
+            id: drone.id,
+            ip: drone.ip,
+            port: drone.port
         });
+    });
+    res.send(dronez);
+});
+
+router.delete('/drones/:id', function (req, res) {
+    server.removeDrone(req.params.id);
+    res.send({
+        error: false
     });
 });
