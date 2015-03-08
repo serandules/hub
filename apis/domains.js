@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 
 var Domain = require('../lib/domain');
+var server = require('../lib/server');
 
 module.exports = router;
 
@@ -17,6 +18,14 @@ router.get('/domains/:id', function (req, res) {
         _id: req.params.id
     }).exec(function (err, domain) {
         res.send(domain);
+    });
+});
+
+router.post('/domains/:id/restart', function (req, res) {
+    server.restartDomain(req.params.id, function (err) {
+        res.send({
+            error: false
+        });
     });
 });
 
