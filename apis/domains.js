@@ -3,7 +3,7 @@ var express = require('express');
 var router = express.Router();
 
 var Domain = require('../lib/domain');
-var server = require('../lib/server');
+var hub = require('../lib/hub');
 
 module.exports = router;
 
@@ -22,7 +22,7 @@ router.get('/domains/:id', function (req, res) {
 });
 
 router.post('/domains/:id/restart', function (req, res) {
-    server.restartDomain(req.params.id, function (err) {
+    hub.restartDomain(req.params.id, function (err) {
         res.send({
             error: false
         });

@@ -1,7 +1,7 @@
 var log = require('logger')('hub:apis:hub');
 var express = require('express');
 var hub = require('../lib/hub');
-var server = require('../lib/server');
+var server = require('../lib/hub');
 var client = require('../lib/client');
 var router = express.Router();
 
@@ -44,7 +44,7 @@ router.post('/hub/client/:action', function (req, res) {
 });
 
 router.post('/hub/plan', function (req, res) {
-    server.savePlan(function (err) {
+    hub.savePlan(function (err) {
         if (err) {
             return res.status(500).send({
                 error: err
@@ -57,7 +57,7 @@ router.post('/hub/plan', function (req, res) {
 });
 
 router.delete('/hub/plan', function (req, res) {
-    server.removePlan(function (err) {
+    hub.removePlan(function (err) {
         if (err) {
             return res.status(500).send({
                 error: err

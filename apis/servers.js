@@ -1,12 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-var server = require('../lib/server');
+var hub = require('../lib/hub');
 
 module.exports = router;
 
 router.get('/servers', function (req, res) {
-    var servers = server.servers();
+    var servers = hub.servers();
     var servs = [];
     var agen;
     var id;
@@ -23,7 +23,7 @@ router.get('/servers', function (req, res) {
 });
 
 router.get('/servers/:id', function (req, res) {
-    var serv = server.servers(req.params.id);
+    var serv = hub.servers(req.params.id);
     res.send({
         id: serv.id,
         ip: serv.ip

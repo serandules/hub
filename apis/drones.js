@@ -3,13 +3,13 @@ var express = require('express');
 var router = express.Router();
 
 var Domain = require('../lib/domain');
-var server = require('../lib/server');
+var hub = require('../lib/hub');
 
 module.exports = router;
 
 router.post('/drones', function (req, res) {
     var data = req.body;
-    var serv = server.servers(data.server);
+    var serv = hub.servers(data.server);
     serv.start(data.domain, function (err, id, ip, port) {
         log.debug('drone started id:%s, ip:%s, port:%s', id, ip, port);
     });
@@ -19,7 +19,7 @@ router.post('/drones', function (req, res) {
 });
 
 router.get('/drones/:id', function (req, res) {
-    var drone = server.drone(req.params.id);
+    var drone = hub.drone(req.params.id);
     if (!drone) {
         return res.status(404).send({
             error: 'drone cannot be found'
@@ -33,7 +33,7 @@ router.get('/drones/:id', function (req, res) {
 });
 
 router.get('/drones', function (req, res) {
-    var drones = server.drones(req.query.domain);
+    var drones = hub.drones(req.query.domain);
     var dronez = [];
     drones.forEach(function (drone) {
         dronez.push({
@@ -46,7 +46,7 @@ router.get('/drones', function (req, res) {
 });
 
 router.delete('/drones/:id', function (req, res) {
-    server.removeDrone(req.params.id);
+    hub.removeDrone(req.params.id);
     res.send({
         error: false
     });

@@ -14,7 +14,7 @@ var builder = require('component-middleware');
 var auth = require('auth');
 var procevent = require('procevent');
 
-var serv = require('./lib/server');
+var hub = require('./lib/hub');
 
 var drone = require('./lib/drone');
 
@@ -98,7 +98,7 @@ db.on('error', log.error.bind(log, 'connection error:'));
 db.once('open', function callback() {
     log.info('connected to mongodb : ' + mongourl);
 
-    serv.listen(io.of('/servers').use(socouth));
+    hub.listen(io.of('/servers').use(socouth));
     drone.listen(io.of('/drones').use(socouth));
 
     server.listen(configs.port, function () {
