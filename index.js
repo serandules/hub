@@ -98,6 +98,7 @@ db.once('open', function callback() {
 
     hub.listenServers(io.of('/servers').use(socouth));
     hub.listenDrones(io.of('/drones').use(socouth));
+    hub.listenConfigs(io.of('/configs').use(socouth));
 
     server.listen(configs.port, function () {
         var address = server.address();
