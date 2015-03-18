@@ -9,10 +9,7 @@ module.exports = router;
 
 router.post('/drones', function (req, res) {
     var data = req.body;
-    var serv = hub.servers(data.server);
-    serv.start(data.domain, function (err, id, ip, port) {
-        log.debug('drone started id:%s, ip:%s, port:%s', id, ip, port);
-    });
+    hub.startDrone(data.server, data.domain);
     res.send({
         error: false
     });
@@ -46,7 +43,7 @@ router.get('/drones', function (req, res) {
 });
 
 router.delete('/drones/:id', function (req, res) {
-    hub.removeDrone(req.params.id);
+    hub.stopDrone(req.params.id);
     res.send({
         error: false
     });
