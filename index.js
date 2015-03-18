@@ -16,8 +16,6 @@ var procevent = require('procevent');
 
 var hub = require('./lib/hub');
 
-var drone = require('./lib/drone');
-
 var mongourl = 'mongodb://localhost/hub';
 
 var options = {
@@ -98,8 +96,8 @@ db.on('error', log.error.bind(log, 'connection error:'));
 db.once('open', function callback() {
     log.info('connected to mongodb : ' + mongourl);
 
-    hub.listen(io.of('/servers').use(socouth));
-    drone.listen(io.of('/drones').use(socouth));
+    hub.listenServers(io.of('/servers').use(socouth));
+    hub.listenDrones(io.of('/drones').use(socouth));
 
     server.listen(configs.port, function () {
         var address = server.address();
