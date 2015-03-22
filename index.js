@@ -110,8 +110,7 @@ db.once('open', function callback() {
     });
 });
 
-/*
- process.on('uncaughtException', function (err) {
- log.fatal('unhandled exception %s', err);
- log.trace(err.stack);
- });*/
+process.on('uncaughtException', function (err) {
+    log.fatal('unhandled exception %s', err);
+    log.trace(err.stack);
+});
