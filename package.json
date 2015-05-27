@@ -3,6 +3,7 @@
     "version": "0.0.0",
     "description": "hub",
     "dependencies": {
+        "logger": "serandules/logger#master",
         "express": "4.*",
         "serve-favicon": "2.*",
         "body-parser": "1.*",
