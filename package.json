@@ -14,7 +14,9 @@
         "auth": "serandules/auth#master",
         "procevent": "serandules/procevent#master",
         "hub-configs": "serandules/hub-configs#master",
+        "token": "serandules/token#master",
         "token-service": "serandules/token-service#master",
+        "user": "serandules/user#master",
         "user-service": "serandules/user-service#master"
     },
     "repository": {
