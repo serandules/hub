@@ -3,6 +3,6 @@
     "scripts": ["client/index.js"],
     "templates": ["component.json"],
     "dependencies": {
-        "serandomps/hub": "*"
+        "serandomps/hub": "master"
     }
 }
