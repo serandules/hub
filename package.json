@@ -3,11 +3,17 @@
     "version": "0.0.0",
     "description": "hub",
     "dependencies": {
-        "logger": "serandules/logger#master",
         "express": "4.*",
+        "mongoose": "4.*",
         "serve-favicon": "2.*",
         "body-parser": "1.*",
-        "socket.io": "1.3.*"
+        "socket.io": "1.*",
+        "node-uuid": "1.*",
+        "component-middleware": "1.*",
+        "logger": "serandules/logger#master",
+        "auth": "serandules/auth#master",
+        "procevent": "serandules/procevent#master",
+        "hub-configs": "serandules/hub-configs#master"
     },
     "repository": {
         "type": "git",
