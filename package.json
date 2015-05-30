@@ -11,6 +11,8 @@
         "node-uuid": "1.*",
         "component-middleware": "1.*",
         "logger": "serandules/logger#master",
+        "utils": "serandules/utils#master",
+        "build": "serandules/build#master",
         "auth": "serandules/auth#master",
         "procevent": "serandules/procevent#master",
         "hub-configs": "serandules/hub-configs#master",

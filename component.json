@@ -1,5 +1,5 @@
 {
-    "name": "hub.serandives.com",
+    "name": "hub",
     "scripts": ["client/index.js"],
     "templates": ["component.json"],
     "dependencies": {

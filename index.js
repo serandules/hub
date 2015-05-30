@@ -13,8 +13,12 @@ var bodyParser = require('body-parser');
 var builder = require('component-middleware');
 var auth = require('auth');
 var procevent = require('procevent');
+var utils = require('utils');
+var build = require('build');
 
 var hub = require('./lib/hub');
+
+var prod = utils.prod();
 
 var mongourl = 'mongodb://localhost/hub';
 
@@ -34,7 +38,6 @@ auth = auth({
         '^\/apis\/v\/menus\/.*$'
     ]
 });
-
 
 var socouth = function (socket, next) {
     var query = socket.handshake.query;
@@ -75,9 +78,15 @@ app.use('/apis/v', require('./apis/configs'));
 app.use('/apis/v', require('./apis/drones'));
 app.use('/apis/v', require('./apis/hub'));
 
-app.use(builder({
-    path: '/build/build'
-}));
+if (prod) {
+    log.info('building components during startup');
+    build();
+} else {
+    log.info('hot component building with express middleware');
+    app.use(builder({
+        path: '/public/build'
+    }));
+}
 //index page
 app.all('*', function (req, res) {
     //TODO: check caching headers
