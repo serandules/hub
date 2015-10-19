@@ -33,9 +33,12 @@ var options = {
 auth = auth({
     open: [
         '^(?!\\/apis(\\/|$)).+',
-        '^\/apis\/v\/tokens([\/].*|$)',
+        '^\/apis\/v\/tokens$',
         '^\/apis\/v\/vehicles$',
         '^\/apis\/v\/menus\/.*$'
+    ],
+    hybrid: [
+        '^\/apis\/v\/tokens\/.*'
     ]
 });
 
