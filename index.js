@@ -35,6 +35,7 @@ auth = auth({
         '^(?!\\/apis(\\/|$)).+',
         '^\/apis\/v\/tokens$',
         '^\/apis\/v\/vehicles$',
+        '^\/apis\/v\/configs\/boot$',
         '^\/apis\/v\/menus\/.*$'
     ],
     hybrid: [

@@ -1,6 +1,7 @@
+var log = require('logger')('hub:apis:configs');
 var express = require('express');
 var router = express.Router();
-var Config = require('../lib/config');
+var Config = require('config');
 
 module.exports = router;
 
@@ -8,7 +9,7 @@ router.get('/configs', function (req, res) {
     Config.find({}).exec(function (err, configs) {
         if (err) {
             //TODO: send proper HTTP code
-            console.error('config find error');
+            log.error('config find error: %e', err);
             return res.status(500).send({
                 error: true
             });
@@ -17,13 +18,13 @@ router.get('/configs', function (req, res) {
     });
 });
 
-router.get('/configs/:id', function (req, res) {
+router.get('/configs/:name', function (req, res) {
     Config.findOne({
-        _id: req.params.id
+        name: req.params.name
     }).exec(function (err, config) {
         if (err) {
             //TODO: send proper HTTP code
-            console.error('config find error');
+            log.error('config find error: %e', err);
             return res.status(500).send({
                 error: true
             });
@@ -37,13 +38,13 @@ router.get('/configs/:id', function (req, res) {
     });
 });
 
-router.delete('/configs/:id', function (req, res) {
+router.delete('/configs/:name', function (req, res) {
     Config.findOne({
-        _id: req.params.id
+        name: req.params.name
     }).exec(function (err, config) {
         if (err) {
             //TODO: send proper HTTP code
-            console.error('config find error');
+            log.error('config find error: %e', err);
             return res.status(500).send({
                 error: true
             });
@@ -63,7 +64,7 @@ router.delete('/configs/:id', function (req, res) {
 router.post('/configs', function (req, res) {
     Config.create(req.body, function (err, config) {
         if (err) {
-            console.error(err);
+            log.error('config find error: %e', err);
             return res.status(500).send({
                 error: true
             });
