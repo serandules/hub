@@ -9,6 +9,7 @@
         "body-parser": "1.*",
         "socket.io": "1.*",
         "node-uuid": "1.*",
+        "dustjs-linkedin": "2.7.*",
         "component-middleware": "1.*",
         "logger": "serandules/logger#master",
         "utils": "serandules/utils#master",
