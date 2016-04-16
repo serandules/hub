@@ -1,33 +1,8 @@
 {
     "name": "hub",
-    "description": "hub",
-    "paths": ["locals"],
-    "locals": [
-        "async",
-        "dust",
-        "serand",
-        "utils",
-        "user",
-        "breadcrumb",
-        "navigation",
-        "drones",
-        "domains",
-        "configs",
-        "servers",
-        "self",
-        "agent",
-        "server-details",
-        "signin"
-    ],
+    "scripts": ["client/index.js"],
+    "templates": ["component.json"],
     "dependencies": {
-        "visionmedia/page.js": "*"
-    },
-    "scripts": ["boot.js", "controllers/signin.js"],
-    "styles": ["nunito.css", "oxygen.css", "boot.css"],
-    "templates": ["component.json", "one-column.html", "two-column.html", "three-column.html"],
-    "images": [
-        "images/logo.png",
-        "images/logo@2x.png"
-    ],
-    "main": "boot.js"
+        "serandomps/hub": "master"
+    }
 }

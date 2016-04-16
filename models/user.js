@@ -1,10 +1,11 @@
 var bcrypt = require('bcrypt');
 var SALT_WORK_FACTOR = 10;
 
+var permission = require('../lib/permission');
 var mongoose = require('mongoose');
-var permission = require('permission');
-
 var Schema = mongoose.Schema;
+var databases = require('../lib/databases');
+var hub = databases.hub;
 
 var user = Schema({
     email: {type: String, index: {unique: true}},
@@ -103,4 +104,4 @@ user.virtual('id').get(function () {
  callback(null);
  };*/
 
-module.exports = mongoose.model('User', user);
+module.exports = hub.model('User', user);

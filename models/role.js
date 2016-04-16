@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
-var permission = require('permission');
+var permission = require('../lib/permission');
+var databases = require('../lib/databases');
+var hub = databases.hub;
 
 var Schema = mongoose.Schema;
 
@@ -24,4 +26,4 @@ role.virtual('id').get(function () {
     return this._id;
 });
 
-module.exports = mongoose.model('Role', role);
+module.exports = hub.model('Role', role);

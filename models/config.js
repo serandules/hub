@@ -1,10 +1,12 @@
 var log = require('logger')('config');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var databases = require('../lib/databases');
+var hub = databases.hub;
 
 var config = Schema({
     name: String,
-    value: Object,
+    value: String,
     has: {type: Object, default: {}},
     allowed: {type: Object, default: {}}
 });
@@ -21,4 +23,4 @@ config.virtual('id').get(function () {
     return this._id;
 });
 
-module.exports = mongoose.model('Config', config);
+module.exports = hub.model('Config', config);

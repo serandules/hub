@@ -9,7 +9,8 @@ router.get('/menus/:id', function (req, res) {
         menu: [
             {url: '/hub', title: 'Hub'},
             {url: '/domains', title: 'Domains'},
-            {url: '/configs', title: 'Configs'}
+            {url: '/configs', title: 'Configs'},
+            {url: '/serand/configs', title: 'Serand'}
         ]
     });
 });

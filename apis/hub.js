@@ -1,7 +1,6 @@
 var log = require('logger')('hub:apis:hub');
 var express = require('express');
 var hub = require('../lib/hub');
-var server = require('../lib/hub');
 var client = require('../lib/client');
 var router = express.Router();
 

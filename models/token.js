@@ -1,11 +1,13 @@
-var log = require('./../lib/logger')('token');
+var log = require('logger')('token');
 var mongoose = require('mongoose');
 var autopopulate = require('mongoose-autopopulate');
 var Schema = mongoose.Schema;
+var databases = require('../lib/databases');
+var hub = databases.hub;
 var crypto = require('crypto');
 var async = require('async');
 
-var permission = require('permission');
+var permission = require('../lib/permission');
 
 var TOKEN_LENGTH = 48;
 
@@ -115,4 +117,4 @@ token.virtual('id').get(function () {
  callback(null);
  };*/
 
-module.exports = mongoose.model('Token', token);
+module.exports = hub.model('Token', token);

@@ -6,21 +6,19 @@ var fs = require('fs');
 var uuid = require('node-uuid');
 var https = require('https');
 var express = require('express');
-var mongoose = require('mongoose');
 var io = require('socket.io');
 var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var builder = require('component-middleware');
-var auth = require('auth');
+var auth = require('./lib/auth');
 var procevent = require('procevent');
 var utils = require('utils');
 var build = require('build');
 
+var databases = require('./lib/databases');
 var hub = require('./lib/hub');
 
 var prod = utils.prod();
-
-var mongourl = 'mongodb://localhost/hub';
 
 var options = {
     key: fs.readFileSync(configs.ssl.key),
@@ -72,8 +70,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 //token apis
-app.use('/apis/v', require('token-service'));
-app.use('/apis/v', require('user-service'));
+app.use('/apis/v', require('./apis/tokens'));
+app.use('/apis/v', require('./apis/users'));
 
 app.use('/apis/v', require('./apis/menus'));
 app.use('/apis/v', require('./apis/servers'));
@@ -81,6 +79,8 @@ app.use('/apis/v', require('./apis/domains'));
 app.use('/apis/v', require('./apis/configs'));
 app.use('/apis/v', require('./apis/drones'));
 app.use('/apis/v', require('./apis/hub'));
+
+app.use('/apis/v/serand', require('./apis/serand/configs'));
 
 if (prod) {
     log.info('building components during startup');
@@ -101,13 +101,11 @@ var server = https.createServer(options, app);
 
 io = io(server);
 
-mongoose.connect(mongourl);
-
-var db = mongoose.connection;
+var db = databases.hub;
 db.on('error', log.error.bind(log, 'connection error:'));
 
 db.once('open', function callback() {
-    log.info('connected to mongodb : ' + mongourl);
+    log.info('connected to mongodb : %s', 'hub');
 
     hub.listenServers(io.of('/servers').use(socouth));
     hub.listenDrones(io.of('/drones').use(socouth));
@@ -125,5 +123,5 @@ db.once('open', function callback() {
 
 process.on('uncaughtException', function (err) {
     log.fatal('unhandled exception %s', err);
-    log.trace(err.stack);
+    log.trace(err);
 });

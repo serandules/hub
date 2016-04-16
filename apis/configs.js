@@ -1,12 +1,28 @@
 var log = require('logger')('hub:apis:configs');
 var express = require('express');
 var router = express.Router();
-var Config = require('config');
+var Config = require('../models/config');
 
 module.exports = router;
 
+var stringify = function (configs) {
+    var o = Array.isArray(configs) ? configs : [configs];
+    o.forEach(function (config) {
+        config.value = JSON.stringify(config.value);
+    });
+    return configs;
+};
+
+var parse = function (configs) {
+    var o = Array.isArray(configs) ? configs : [configs];
+    o.forEach(function (config) {
+        config.value = JSON.parse(config.value);
+    });
+    return configs;
+};
+
 router.get('/configs', function (req, res) {
-    Config.find({}).exec(function (err, configs) {
+    Config.find({}).lean().exec(function (err, configs) {
         if (err) {
             //TODO: send proper HTTP code
             log.error('config find error: %e', err);
@@ -14,14 +30,14 @@ router.get('/configs', function (req, res) {
                 error: true
             });
         }
-        res.send(configs);
+        res.send(parse(configs));
     });
 });
 
 router.get('/configs/:name', function (req, res) {
     Config.findOne({
         name: req.params.name
-    }).exec(function (err, config) {
+    }).lean().exec(function (err, config) {
         if (err) {
             //TODO: send proper HTTP code
             log.error('config find error: %e', err);
@@ -34,7 +50,7 @@ router.get('/configs/:name', function (req, res) {
                 error: true
             });
         }
-        res.send(config);
+        res.send(parse(config));
     });
 });
 
@@ -62,7 +78,7 @@ router.delete('/configs/:name', function (req, res) {
 });
 
 router.post('/configs', function (req, res) {
-    Config.create(req.body, function (err, config) {
+    Config.create(stringify(req.body), function (err, config) {
         if (err) {
             log.error('config find error: %e', err);
             return res.status(500).send({

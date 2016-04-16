@@ -2,7 +2,7 @@ var log = require('logger')('hub:apis:drones');
 var express = require('express');
 var router = express.Router();
 
-var Domain = require('../lib/domain');
+var Domain = require('../models/domain');
 var hub = require('../lib/hub');
 
 module.exports = router;

@@ -1,7 +1,7 @@
-var log = require('../lib/logger')('hub:apis:configs');
+var log = require('logger')('hub:apis:configs');
 var express = require('express');
 var router = express.Router();
-var Config = require('../models/config');
+var Config = require('../../models/serand/config');
 
 module.exports = router;
 
