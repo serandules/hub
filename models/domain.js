@@ -1,4 +1,4 @@
-var log = require('logger')('hub:lib:domain');
+var log = require('./../lib/logger')('hub:lib:domain');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
