@@ -4,6 +4,7 @@ var router = express.Router();
 
 var Domain = require('../models/domain');
 var hub = require('../lib/hub');
+var deployer = require('../lib/deployer');
 
 module.exports = router;
 

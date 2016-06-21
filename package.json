@@ -1,29 +1,34 @@
 {
-    "name": "hub",
-    "version": "0.0.0",
-    "description": "hub",
-    "dependencies": {
-        "express": "4.*",
-        "mongoose": "4.*",
-        "serve-favicon": "2.*",
-        "body-parser": "1.*",
-        "socket.io": "1.*",
-        "node-uuid": "1.*",
-        "dustjs-linkedin": "2.7.*",
-        "component-middleware": "1.*",
-        "logger": "serandules/logger#master",
-        "utils": "serandules/utils#master",
-        "build": "serandules/build#master",
-        "auth": "serandules/auth#master",
-        "procevent": "serandules/procevent#master",
-        "hub-configs": "serandules/hub-configs#master",
-        "token": "serandules/token#master",
-        "token-service": "serandules/token-service#master",
-        "user": "serandules/user#master",
-        "user-service": "serandules/user-service#master"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/serandules/hub.git"
-    }
+  "name": "hub",
+  "version": "0.0.0",
+  "description": "hub",
+  "dependencies": {
+    "nconf": "0.8.4",
+    "express": "4.*",
+    "mongoose": "4.*",
+    "serve-favicon": "2.*",
+    "body-parser": "1.*",
+    "socket.io": "1.*",
+    "node-uuid": "1.*",
+    "dustjs-linkedin": "2.7.*",
+    "component-middleware": "1.*",
+    "temp": "0.8.3",
+    "rimraf": "2.5.2",
+    "shelljs": "0.7.0",
+    "aws-sdk": "2.3.17",
+    "logger": "serandules/logger#master",
+    "utils": "serandules/utils#master",
+    "build": "serandules/build#master",
+    "auth": "serandules/auth#master",
+    "procevent": "serandules/procevent#master",
+    "hub-configs": "serandules/hub-configs#master",
+    "token": "serandules/token#master",
+    "token-service": "serandules/token-service#master",
+    "user": "serandules/user#master",
+    "user-service": "serandules/user-service#master"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/serandules/hub.git"
+  }
 }

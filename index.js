@@ -11,6 +11,7 @@ var favicon = require('serve-favicon');
 var bodyParser = require('body-parser');
 var builder = require('component-middleware');
 var auth = require('./lib/auth');
+var serandi = require('./lib/serandi');
 var procevent = require('procevent');
 var utils = require('utils');
 var build = require('build');
@@ -61,6 +62,8 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 app.use('/public', express.static(__dirname + '/public'));
 
+app.use(serandi.loc);
+
 app.use(auth);
 
 app.use(bodyParser.urlencoded({
@@ -75,6 +78,7 @@ app.use('/apis/v', require('./apis/users'));
 
 app.use('/apis/v', require('./apis/menus'));
 app.use('/apis/v', require('./apis/servers'));
+app.use('/apis/v', require('./apis/apps'));
 app.use('/apis/v', require('./apis/domains'));
 app.use('/apis/v', require('./apis/configs'));
 app.use('/apis/v', require('./apis/drones'));
