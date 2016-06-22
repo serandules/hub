@@ -6,7 +6,11 @@ var hub = databases.hub;
 
 var domain = Schema({
     name: String,
-    repo: String
+    repo: String,
+    routes: [
+        {path: '*', method: 'get', }
+    ]
+
 });
 
 domain.set('toJSON', {

@@ -3,6 +3,7 @@ var express = require('express');
 var router = express.Router();
 
 var App = require('../models/app');
+var Deployment = require('../models/deployment');
 var hub = require('../lib/hub');
 var deployer = require('../lib/deployer');
 
@@ -26,18 +27,28 @@ router.post('/apps/:id/deploy', function (req, res) {
     App.findOne({
         _id: req.params.id
     }).exec(function (err, app) {
-        if (!app) {
-            return res.status(404);
+        if (err) {
+            log.error('error retrieving app: %s', req.params.id);
+            return res.sendStatus(500);
         }
-        deployer.deploy(app.repo, function (err) {
+        if (!app) {
+            return res.sendStatus(404);
+        }
+        Deployment.create({
+            apps: [app.id]
+        }, function (err, deployment) {
             if (err) {
-                log.error(err);
+                log.error('error creating deployment for app: %s', app.id);
+                return res.sendStatus(500);
             }
+            deployer.deploy(deployment.id, function (err) {
+                if (err) {
+                    log.error(err);
+                }
+            });
+            res.sendStatus(202);
         });
-        res.send({
-            error: false
-        });
-    });
+    })
 });
 
 router.post('/apps', function (req, res) {

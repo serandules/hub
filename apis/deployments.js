@@ -1,13 +1,13 @@
-var log = require('logger')('apis:releases');
+var log = require('logger')('apis:deployments');
 var express = require('express');
 var router = express.Router();
 
-var Release = require('../models/release');
+var Deployment = require('../models/deployment');
 var build = require('../lib/build');
 
 module.exports = router;
 
-router.get('/releases/:id', function (req, res) {
+router.get('/deployments/:id', function (req, res) {
     res.send({
         home: {url: '/', title: 'serandives.com'},
         menu: [
@@ -19,27 +19,27 @@ router.get('/releases/:id', function (req, res) {
     });
 });
 
-router.post('/releases', function (req, res) {
-    Release.create(req.body, function (err, release) {
+router.post('/deployments', function (req, res) {
+    Deployment.create(req.body, function (err, deployment) {
         if (err) {
             res.status(400).send({
-                error: 'error while creating release'
+                error: 'error while creating deployment'
             });
             return;
         }
-        res.loc('releases', release.id).status(201).end();
+        res.loc('deployments', deployment.id).status(201).end();
     });
 });
 
-router.post('/releases/:id/build', function (req, res) {
+router.post('/deployments/:id/build', function (req, res) {
     var id = req.params.id;
     build(id, function (err) {
         var status = err ? 'failed' : 'done';
-        Release.update({_id: id}, {
+        Deployment.update({_id: id}, {
             'status.build': status
         }, function (err) {
             if (err) {
-                log.error('error building release: %s, err: %s', id, err);
+                log.error('error building deployment: %s, err: %s', id, err);
             }
         });
     });

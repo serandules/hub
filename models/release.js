@@ -1,15 +1,12 @@
-var log = require('logger')('release');
+var log = require('logger')('hub:lib:release');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var databases = require('../lib/databases');
 var hub = databases.hub;
 
 var release = Schema({
-    name: String,
-    description: String,
-    sources: [],
-    has: {type: Object, default: {}},
-    allowed: {type: Object, default: {}}
+    repo: String,
+    revision: String
 });
 
 release.set('toJSON', {
